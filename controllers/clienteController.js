@@ -29,6 +29,53 @@ async function cadastrarNovoCliente(req, res) {
     }
 }
 
+//Função para deletar cliente no banco de dados id_cliente ou nome_fantasia
 
+async function deletarCliente(req, res) {
+    const { id_cliente, nome_fantasia } = req.body;
+
+    if (!id_cliente && !nome_fantasia) {
+        return res.status(400).json({ mensagem: 'Preencha o campo id_cliente ou nome_fantasia.' });
+    }
+
+    try {
+        const sucesso = await clienteService.deletarCliente(id_cliente, nome_fantasia);
+
+        if (sucesso) {
+            res.status(200).json({ mensagem: 'Cliente deletado com sucesso!' });
+        } else {
+            res.status(500).json({ mensagem: 'Não foi possível deletar o cliente.' });
+        }
+    } catch (erro) {
+        console.error('Erro ao deletar cliente:', erro);
+        res.status(500).json({ mensagem: 'Erro interno no servidor.' });
+    }
+}
+
+//Função para atualizar cliente no banco de dados 
+
+async function atualizarCliente(req, res) {
+    const { nome_fantasia, razao_social, cnpj, segmento, telefone, site } = req.body;
+
+    if (!nome_fantasia || !razao_social || !cnpj || !segmento || !telefone || !site) {
+        return res.status(400).json({ mensagem: 'Preencha todos os campos.' });
+    }
+
+    try {
+        const sucesso = await clienteService.atualizarCliente(nome_fantasia, razao_social, cnpj, segmento, telefone, site);
+
+        if (sucesso) {
+            res.status(200).json({ mensagem: 'Cliente atualizado com sucesso!' });
+        } else {
+            res.status(500).json({ mensagem: 'Não foi possível atualizar o cliente.' });
+        }
+    } catch (erro) {
+        console.error('Erro ao atualizar cliente:', erro);
+        res.status(500).json({ mensagem: 'Erro interno no servidor.' });
+    }
+}
+
+module.exports = { atualizarCliente };
+module.exports = { deletarCliente };
 module.exports = { getDadosCliente };
 module.exports = { cadastrarNovoCliente };
